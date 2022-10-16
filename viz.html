@@ -1,0 +1,100 @@
+<div id="3dmolviewer_UNIQUEID"  style="position: relative; width: 500px; height: 300px">
+        <p id="3dmolwarning_UNIQUEID" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+        <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
+        </div>
+<script>
+
+var loadScriptAsync = function(uri){
+  return new Promise((resolve, reject) => {
+    var tag = document.createElement('script');
+    tag.src = uri;
+    tag.async = true;
+    tag.onload = () => {
+      resolve();
+    };
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});
+};
+
+if(typeof $3Dmolpromise === 'undefined') {
+$3Dmolpromise = null;
+  $3Dmolpromise = loadScriptAsync('https://cdn.jsdelivr.net/npm/3dmol@latest/build/3Dmol-min.min.js');
+}
+
+var viewer_UNIQUEID = null;
+var warn = document.getElementById("3dmolwarning_UNIQUEID");
+if(warn) {
+    warn.parentNode.removeChild(warn);
+}
+$3Dmolpromise.then(function() {
+viewer_UNIQUEID = $3Dmol.createViewer($("#3dmolviewer_UNIQUEID"),{backgroundColor:"white"});
+viewer_UNIQUEID.zoomTo();
+	viewer_UNIQUEID.addModel("50\n\nB          1.25621        0.72528       10.00000\nB          0.00000        2.90110       10.00000\nB         -1.25621        5.07693       10.00000\nB         -2.51243        7.25276       10.00000\nB         -3.76864        9.42858       10.00000\nB          3.76864        0.72528       10.00000\nB          2.51243        2.90110       10.00000\nB          1.25621        5.07693       10.00000\nB          0.00000        7.25276       10.00000\nB         -1.25621        9.42858       10.00000\nB          6.28107        0.72528       10.00000\nB          5.02486        2.90110       10.00000\nB          3.76864        5.07693       10.00000\nB          2.51243        7.25276       10.00000\nB          1.25621        9.42858       10.00000\nB          8.79350        0.72528       10.00000\nB          7.53728        2.90110       10.00000\nB          6.28107        5.07693       10.00000\nB          5.02486        7.25276       10.00000\nB          3.76864        9.42858       10.00000\nB         11.30593        0.72528       10.00000\nB         10.04971        2.90110       10.00000\nB          8.79350        5.07693       10.00000\nB          7.53728        7.25276       10.00000\nB          6.28107        9.42858       10.00000\nN          0.00000        1.45055       10.00000\nN         -1.25621        3.62638       10.00000\nN         -2.51243        5.80220       10.00000\nN         -3.76864        7.97803       10.00000\nN         -5.02486       10.15386       10.00000\nN          2.51243        1.45055       10.00000\nN          1.25621        3.62638       10.00000\nN          0.00000        5.80220       10.00000\nN         -1.25621        7.97803       10.00000\nN         -2.51243       10.15386       10.00000\nN          5.02486        1.45055       10.00000\nN          3.76864        3.62638       10.00000\nN          2.51243        5.80220       10.00000\nN          1.25621        7.97803       10.00000\nN          0.00000       10.15386       10.00000\nN          7.53729        1.45055       10.00000\nN          6.28107        3.62638       10.00000\nN          5.02486        5.80220       10.00000\nN          3.76864        7.97803       10.00000\nN          2.51243       10.15386       10.00000\nN         10.04971        1.45055       10.00000\nN          8.79350        3.62638       10.00000\nN          7.53729        5.80220       10.00000\nN          6.28107        7.97803       10.00000\nN          5.02486       10.15386       10.00000\n","xyz");
+	viewer_UNIQUEID.setStyle({"sphere": {"colorscheme": "Jmol", "scale": 0.3}, "stick": {"colorscheme": "Jmol", "radius": 0.0}});
+	viewer_UNIQUEID.addLabel("1",{"position": {"x": 1.256214, "y": 0.725276, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("2",{"position": {"x": 0.0, "y": 2.901102, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("3",{"position": {"x": -1.256214, "y": 5.076929, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("4",{"position": {"x": -2.512428, "y": 7.252756, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("5",{"position": {"x": -3.768642, "y": 9.428582, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("6",{"position": {"x": 3.768642, "y": 0.725276, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("7",{"position": {"x": 2.512428, "y": 2.901102, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("8",{"position": {"x": 1.256214, "y": 5.076929, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("9",{"position": {"x": 0.0, "y": 7.252756, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("10",{"position": {"x": -1.256214, "y": 9.428582, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("11",{"position": {"x": 6.281071, "y": 0.725276, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("12",{"position": {"x": 5.024856, "y": 2.901102, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("13",{"position": {"x": 3.768642, "y": 5.076929, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("14",{"position": {"x": 2.512428, "y": 7.252756, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("15",{"position": {"x": 1.256214, "y": 9.428582, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("16",{"position": {"x": 8.7935, "y": 0.725276, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("17",{"position": {"x": 7.537285, "y": 2.901102, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("18",{"position": {"x": 6.281072, "y": 5.076929, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("19",{"position": {"x": 5.024856, "y": 7.252756, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("20",{"position": {"x": 3.768642, "y": 9.428582, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("21",{"position": {"x": 11.305927, "y": 0.725276, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("22",{"position": {"x": 10.049713, "y": 2.901102, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("23",{"position": {"x": 8.7935, "y": 5.076929, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("24",{"position": {"x": 7.537285, "y": 7.252756, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("25",{"position": {"x": 6.281072, "y": 9.428582, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("26",{"position": {"x": 0.0, "y": 1.450551, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("27",{"position": {"x": -1.256214, "y": 3.626378, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("28",{"position": {"x": -2.512428, "y": 5.802204, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("29",{"position": {"x": -3.768642, "y": 7.978031, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("30",{"position": {"x": -5.024856, "y": 10.153858, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("31",{"position": {"x": 2.512428, "y": 1.450551, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("32",{"position": {"x": 1.256214, "y": 3.626378, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("33",{"position": {"x": 0.0, "y": 5.802204, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("34",{"position": {"x": -1.256214, "y": 7.978031, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("35",{"position": {"x": -2.512428, "y": 10.153858, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("36",{"position": {"x": 5.024856, "y": 1.450551, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("37",{"position": {"x": 3.768642, "y": 3.626378, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("38",{"position": {"x": 2.512428, "y": 5.802204, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("39",{"position": {"x": 1.256214, "y": 7.978031, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("40",{"position": {"x": 0.0, "y": 10.153858, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("41",{"position": {"x": 7.537286, "y": 1.450551, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("42",{"position": {"x": 6.281071, "y": 3.626378, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("43",{"position": {"x": 5.024856, "y": 5.802204, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("44",{"position": {"x": 3.768642, "y": 7.978031, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("45",{"position": {"x": 2.512428, "y": 10.153858, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("46",{"position": {"x": 10.049714, "y": 1.450551, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("47",{"position": {"x": 8.793499, "y": 3.626378, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("48",{"position": {"x": 7.537286, "y": 5.802204, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("49",{"position": {"x": 6.281071, "y": 7.978031, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("50",{"position": {"x": 5.024856, "y": 10.153858, "z": 10.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 18, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addArrow({"start": {"x": 0.0, "y": 0.0, "z": 0.0}, "end": {"x": 0.8, "y": 0.0, "z": 0.0}, "radiusRadio": 0.2, "color": "red"});
+	viewer_UNIQUEID.addArrow({"start": {"x": 0.0, "y": 0.0, "z": 0.0}, "end": {"x": 0.0, "y": 0.8, "z": 0.0}, "radiusRadio": 0.2, "color": "green"});
+	viewer_UNIQUEID.addArrow({"start": {"x": 0.0, "y": 0.0, "z": 0.0}, "end": {"x": 0.0, "y": 0.0, "z": 0.8}, "radiusRadio": 0.2, "color": "blue"});
+	viewer_UNIQUEID.addLabel("x",{"position": {"x": 0.8, "y": 0.1, "z": 0.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 15, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("y",{"position": {"x": 0.0, "y": 0.9, "z": 0.0}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 15, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.addLabel("z",{"position": {"x": 0.0, "y": 0.1, "z": 0.8}, "backgroundColor": "white", "backgroundOpacity": 0.5, "fontSize": 15, "fontColor": "black", "fontOpacity": 1, "borderThickness": 0.0, "inFront": "true", "showBackground": "false"});
+	viewer_UNIQUEID.zoomTo();
+	viewer_UNIQUEID.spin(false);
+	viewer_UNIQUEID.setClickable({"clickable": "true"});
+	viewer_UNIQUEID.enableContextMenu({"contextMenuEnabled": "true"});
+	viewer_UNIQUEID.render();
+	viewer_UNIQUEID.resize();
+	viewer_UNIQUEID.js();
+viewer_UNIQUEID.render();
+});
+</script>
