@@ -150,9 +150,12 @@ if uploaded_file is not None:
     selected_xyz_str = string_data
     input_geom_str = input_text_area.text_area(label='XYZ file of the given/selected system', value = selected_xyz_str, placeholder = 'Put your text here', height=250)
     
-
+print(input_geom_str)
+print(type(input_geom_str))
 ### Create a dataframe from the original XYZ file ###
-INPUT_GEOM_DATA = StringIO(input_geom_str[2:])
+# Separate into lines and remove the first two lines
+inp_geom_str_splitlines = input_geom_str.splitlines()[2:]
+INPUT_GEOM_DATA = StringIO("\n".join(inp_geom_str_splitlines))
 df = pd.read_csv(INPUT_GEOM_DATA, delim_whitespace=True, names=['atom','x','y','z'])
 # df.reindex(index=range(1, natoms_tot+1))
 df.index += 1 
@@ -195,19 +198,20 @@ if showLabels:
             'backgroundColor': 'white', 'backgroundOpacity': 0.5,'fontSize':18,'fontColor':'black',
                 'fontOpacity':1,'borderThickness':0.0,'inFront':'true','showBackground':'false'})
 # Draw Axis
-originAxis = [0.0, 0.0,0.0]
-view.addArrow({"start": {"x":originAxis[0], "y":originAxis[1], "z":originAxis[2]}, "end": {"x":0.8, "y":originAxis[1], "z":originAxis[2]}, "radiusRadio": 0.2, "color":"red"})
-view.addArrow({"start": {"x":originAxis[0], "y":originAxis[1], "z":originAxis[2]}, "end": {"x":originAxis[0], "y":0.8, "z":originAxis[2]}, "radiusRadio": 0.2, "color":"green"})
-view.addArrow({"start": {"x":originAxis[0], "y":originAxis[1], "z":originAxis[2]}, "end": {"x":originAxis[0], "y":originAxis[1], "z":0.8}, "radiusRadio": 0.2, "color":"blue"})
-view.addLabel('x', {'position': {'x':0.8, 'y':originAxis[1] + 0.1, 'z':originAxis[2]}, 
-            'backgroundColor': 'white', 'backgroundOpacity': 0.5,'fontSize':15,'fontColor':'black',
-                'fontOpacity':1,'borderThickness':0.0,'inFront':'true','showBackground':'false'})
-view.addLabel('y', {'position': {'x':originAxis[0], 'y':0.8 + 0.1, 'z':originAxis[2]}, 
-            'backgroundColor': 'white', 'backgroundOpacity': 0.5,'fontSize':15,'fontColor':'black',
-                'fontOpacity':1,'borderThickness':0.0,'inFront':'true','showBackground':'false'})
-view.addLabel('z', {'position': {'x':originAxis[0], 'y':originAxis[1] + 0.1, 'z':0.8}, 
-            'backgroundColor': 'white', 'backgroundOpacity': 0.5,'fontSize':15,'fontColor':'black',
-                'fontOpacity':1,'borderThickness':0.0,'inFront':'true','showBackground':'false'})
+originAxis_Offset = np.array([-2.0, 1.0, 1.0])
+originAxis = originAxis_Offset + np.array([np.min(coords_tot_np_arr[:,0]), np.min(coords_tot_np_arr[:,1]), np.min(coords_tot_np_arr[:,2])])
+view.addArrow({"start": {"x":originAxis[0], "y":originAxis[1], "z":originAxis[2]}, "end": {"x":originAxis[0]+0.8, "y":originAxis[1], "z":originAxis[2]}, "radiusRadio": 0.2, "color":"red"})
+view.addArrow({"start": {"x":originAxis[0], "y":originAxis[1], "z":originAxis[2]}, "end": {"x":originAxis[0], "y":originAxis[1]+0.8, "z":originAxis[2]}, "radiusRadio": 0.2, "color":"green"})
+view.addArrow({"start": {"x":originAxis[0], "y":originAxis[1], "z":originAxis[2]}, "end": {"x":originAxis[0], "y":originAxis[1], "z":originAxis[2]+0.8}, "radiusRadio": 0.2, "color":"blue"})
+# view.addLabel('x', {'position': {'x':originAxis[0]+0.8, 'y':originAxis[1] + 0.1, 'z':originAxis[2]}, 
+#             'backgroundColor': 'white', 'backgroundOpacity': 0.5,'fontSize':15,'fontColor':'black',
+#                 'fontOpacity':1,'borderThickness':0.0,'inFront':'true','showBackground':'false'})
+# view.addLabel('y', {'position': {'x':originAxis[0], 'y':originAxis[1]+0.8 + 0.1, 'z':originAxis[2]}, 
+#             'backgroundColor': 'white', 'backgroundOpacity': 0.5,'fontSize':15,'fontColor':'black',
+#                 'fontOpacity':1,'borderThickness':0.0,'inFront':'true','showBackground':'false'})
+# view.addLabel('z', {'position': {'x':originAxis[0], 'y':originAxis[1] + 0.1, 'z':originAxis[2]+0.8}, 
+#             'backgroundColor': 'white', 'backgroundOpacity': 0.5,'fontSize':15,'fontColor':'black',
+#                 'fontOpacity':1,'borderThickness':0.0,'inFront':'true','showBackground':'false'})
 # view.addCylinder({"start": {"x":0.0, "y":2.0, "z":0.0}, "end": {"x":0.5, "y":2.0, "z":0.0}, "radius": 0.5, "color":"red"})
 view.zoomTo()
 view.spin(spin)
@@ -230,10 +234,12 @@ with col1:
     source_code = HtmlFile.read() 
     components.html(source_code, height = 300, width=900)
     HtmlFile.close()
+    st.write('###### Axis labels')
+    st.write('*x* : red, \n *y* :green, \n *z* :blue')
 
 with col2:
     st.write('#### Atomic Positions ')
-    st.table(df)
+    st.dataframe(df, height=350)
     st.write('Center of Mass of the total system', COM_calculator(coords_tot_np_arr))
 
 # Select some rows using st.multiselect. This will break down when you have >1000 rows.
@@ -246,24 +252,27 @@ coords_A_np_arr = selected_rows_A[['x','y','z']].to_numpy()
 coords_B_np_arr = selected_rows_B[['x','y','z']].to_numpy()
 com_A = COM_calculator(coords_A_np_arr)
 com_B = COM_calculator(coords_B_np_arr)
+dist_bw_subsystems = np.linalg.norm(com_A - com_B)
+
+st.info('Distance b/w the COMs of the subsystems: ' + str(np.round(dist_bw_subsystems, 6))+'  Angstroms', icon='ℹ️')
+
 col1, col2 = st.columns(2)
 with col1:
     st.write('#### Selected atoms for subsystem A')
-    st.table(selected_rows_A)
-    st.write('Center of Mass of the subsystem A', COM_calculator(coords_A_np_arr))
+    st.dataframe(selected_rows_A, height=350)
+    st.write('Center of Mass of the subsystem A', com_A)
 with col2:
     st.write('#### Selected atoms for subsystem B')
-    st.table(selected_rows_B)
-    st.write('Center of Mass of the subsystem B', COM_calculator(coords_B_np_arr))
+    st.dataframe(selected_rows_B, height=350)
+    st.write('Center of Mass of the subsystem B', com_B)
 
 
-dist_bw_subsystems = np.linalg.norm(com_A - com_B)
-st.write('Distance b/w the subsystems: ' + str(np.round(dist_bw_subsystems, 6))+'  Angstroms')
+
 st.write('#### Reformatted XYZ file with the atoms belonging to the subystem A in the beginning')
-modified_xyz = selected_rows_A.to_string(header=False, index=False)
-modified_xyz = modified_xyz + '\n' + selected_rows_B.to_string(header=False, index=False)
-st.text(modified_xyz)
-
+modified_xyz = selected_rows_A.to_string(header=False, index=False, float_format='{:.6f}'.format)
+modified_xyz = modified_xyz + '\n' + selected_rows_B.to_string(header=False, index=False, float_format='{:.6f}'.format)
+# st.text(modified_xyz)
+st.text_area(label='XYZ file contents with subsystem A in the beginning', value = modified_xyz, placeholder = 'Put your text here', height=250, key = 'output_text_area')
 
 
 ### BASIS SET ####
