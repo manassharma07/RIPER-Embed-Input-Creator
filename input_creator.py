@@ -198,7 +198,7 @@ if showLabels:
             'backgroundColor': 'white', 'backgroundOpacity': 0.5,'fontSize':18,'fontColor':'black',
                 'fontOpacity':1,'borderThickness':0.0,'inFront':'true','showBackground':'false'})
 # Draw Axis
-originAxis_Offset = np.array([-2.0, 1.0, 1.0])
+originAxis_Offset = np.array([-2.0, -2.0, 1.0])
 originAxis = originAxis_Offset + np.array([np.min(coords_tot_np_arr[:,0]), np.min(coords_tot_np_arr[:,1]), np.min(coords_tot_np_arr[:,2])])
 view.addArrow({"start": {"x":originAxis[0], "y":originAxis[1], "z":originAxis[2]}, "end": {"x":originAxis[0]+0.8, "y":originAxis[1], "z":originAxis[2]}, "radiusRadio": 0.2, "color":"red"})
 view.addArrow({"start": {"x":originAxis[0], "y":originAxis[1], "z":originAxis[2]}, "end": {"x":originAxis[0], "y":originAxis[1]+0.8, "z":originAxis[2]}, "radiusRadio": 0.2, "color":"green"})
@@ -246,25 +246,57 @@ with col2:
 st.write('#### Choose the atom labels/indices that should assigend to subsystem A')
 selected_indices = st.multiselect('Select rows:', df.index)
 selected_rows_A = df.loc[selected_indices]
+natoms_A = selected_rows_A.shape[0]
 selected_rows_B = df.loc[~df.index.isin(selected_indices)]
+selected_rows_B.index -= natoms_A
+natoms_B = selected_rows_B.shape[0]
 
 coords_A_np_arr = selected_rows_A[['x','y','z']].to_numpy()
 coords_B_np_arr = selected_rows_B[['x','y','z']].to_numpy()
+
+with st.expander('More customizations', expanded=False):
+    tab1, tab2 = st.tabs(['Translate', 'Rotate'])
+
+    with tab1:
+        subsystem_to_translate = st.selectbox('Choose a subsystem to translate', ['A','B'])
+        col_translate1, col_translate2, col_translate3 = st.columns(3)
+        translate_x = col_translate1.number_input('Translate along x', value=0.0, min_value=-10.0, max_value=10.0, step=0.1)
+        translate_y = col_translate2.number_input('Translate along y', value=0.0, min_value=-10.0, max_value=10.0, step=0.1)
+        translate_z = col_translate3.number_input('Translate along z', value=0.0, min_value=-10.0, max_value=10.0, step=0.1)
+        translate_com = st.number_input('Translate along the line joining the COMs of the subsystems', value=0.0, min_value=-10.0, max_value=10.0, step=0.1)
+
+    with tab2:
+        subsystem_to_rotate = st.selectbox('Choose a subsystem to rotate', ['A','B'])
+        col_translate1, col_translate2, col_translate3 = st.columns(3)
+        translate_x = col_translate1.number_input('Rotate about x', value=0.0, min_value=0.0, max_value=360.0, step=1.0)
+        translate_y = col_translate2.number_input('Rotate about y', value=0.0, min_value=0.0, max_value=360.0, step=1.0)
+        translate_z = col_translate3.number_input('Rotate about z', value=0.0, min_value=0.0, max_value=360.0, step=1.0)
+        translate_com = st.number_input('Rotate about the line joining the COMs of the subsystems', value=0.0, min_value=0.0, max_value=360.0, step=1.0)
+
 com_A = COM_calculator(coords_A_np_arr)
 com_B = COM_calculator(coords_B_np_arr)
-dist_bw_subsystems = np.linalg.norm(com_A - com_B)
+dist_bw_COM_subsystems = np.linalg.norm(com_A - com_B)
+# The following is a 2d array that contains the euclidean distances between the atoms of the two subsystems
+dist_bw_atoms_subsystems = np.sqrt((coords_A_np_arr[:, 0, np.newaxis] - coords_B_np_arr[:, 0])**2 + (coords_A_np_arr[:, 1, np.newaxis] - coords_B_np_arr[:, 1])**2 + (coords_A_np_arr[:, 2, np.newaxis] - coords_B_np_arr[:, 2])**2)
+mindist = np.min(dist_bw_atoms_subsystems)
+# minid = np.argmin(dist_bw_atoms_subsystems)
+# minid = np.where(dist_bw_atoms_subsystems == np.min(dist_bw_atoms_subsystems))
+minid = divmod(dist_bw_atoms_subsystems.argmin(), dist_bw_atoms_subsystems.shape[1])
+st.info('Distance b/w the COMs of the subsystems is ' + str(np.round(dist_bw_COM_subsystems, 6))+'  Angstroms', icon='✨')
+st.info('Minimum distance b/w the atoms of the subsystems is ' + str(np.round(mindist, 5))+'  Angstroms between atoms '+ str(selected_rows_A.iloc[minid[0],0])+'('+str(minid[0]+1)+')'+' and '+ str(selected_rows_B.iloc[minid[1],0])+'('+str(minid[1]+1)+')', icon='✨')
 
-st.info('Distance b/w the COMs of the subsystems: ' + str(np.round(dist_bw_subsystems, 6))+'  Angstroms', icon='ℹ️')
 
 col1, col2 = st.columns(2)
 with col1:
     st.write('#### Selected atoms for subsystem A')
     st.dataframe(selected_rows_A, height=350)
     st.write('Center of Mass of the subsystem A', com_A)
+    st.write('No. of atoms in subsystem A', natoms_A)
 with col2:
     st.write('#### Selected atoms for subsystem B')
     st.dataframe(selected_rows_B, height=350)
     st.write('Center of Mass of the subsystem B', com_B)
+    st.write('No. of atoms in subsystem B', natoms_B)
 
 
 
