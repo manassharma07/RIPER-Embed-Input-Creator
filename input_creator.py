@@ -7,6 +7,7 @@ import time
 from io import StringIO
 import pandas as pd
 import numpy as np
+from stmol import showmol
 
 try:
     # from openbabel import OBMol, OBConversion
@@ -23,6 +24,8 @@ from openbabel import pybel
 
 if os.path.exists('viz.html'):
     os.remove('viz.html')
+if os.path.exists('viz1.html'):
+    os.remove('viz1.html')
 
 def COM_calculator(coords):
     return coords.mean(axis=0)
@@ -159,7 +162,7 @@ INPUT_GEOM_DATA = StringIO("\n".join(inp_geom_str_splitlines))
 df = pd.read_csv(INPUT_GEOM_DATA, delim_whitespace=True, names=['atom','x','y','z'])
 # df.reindex(index=range(1, natoms_tot+1))
 df.index += 1 
-coords_tot_np_arr = df[['x','y','z']].to_numpy()
+coords_Tot_np_arr = df[['x','y','z']].to_numpy()
 
 st.write('#### Visualization')
 ### VISUALIZATION ####
@@ -185,7 +188,7 @@ else:
     view.addModel(structure_for_visualization, 'xyz')
 if style=='ball-stick': # my own custom style
     view.setStyle({'sphere':{'colorscheme':'Jmol','scale':0.3},
-                       'stick':{'colorscheme':'Jmol', 'radius':0.}})
+                       'stick':{'colorscheme':'Jmol', 'radius':0.2}})
 else:
     view.setStyle({style:{'colorscheme':'Jmol'}})
 # Label addition template
@@ -199,7 +202,7 @@ if showLabels:
                 'fontOpacity':1,'borderThickness':0.0,'inFront':'true','showBackground':'false'})
 # Draw Axis
 originAxis_Offset = np.array([-2.0, -2.0, 1.0])
-originAxis = originAxis_Offset + np.array([np.min(coords_tot_np_arr[:,0]), np.min(coords_tot_np_arr[:,1]), np.min(coords_tot_np_arr[:,2])])
+originAxis = originAxis_Offset + np.array([np.min(coords_Tot_np_arr[:,0]), np.min(coords_Tot_np_arr[:,1]), np.min(coords_Tot_np_arr[:,2])])
 view.addArrow({"start": {"x":originAxis[0], "y":originAxis[1], "z":originAxis[2]}, "end": {"x":originAxis[0]+0.8, "y":originAxis[1], "z":originAxis[2]}, "radiusRadio": 0.2, "color":"red"})
 view.addArrow({"start": {"x":originAxis[0], "y":originAxis[1], "z":originAxis[2]}, "end": {"x":originAxis[0], "y":originAxis[1]+0.8, "z":originAxis[2]}, "radiusRadio": 0.2, "color":"green"})
 view.addArrow({"start": {"x":originAxis[0], "y":originAxis[1], "z":originAxis[2]}, "end": {"x":originAxis[0], "y":originAxis[1], "z":originAxis[2]+0.8}, "radiusRadio": 0.2, "color":"blue"})
@@ -240,7 +243,7 @@ with col1:
 with col2:
     st.write('#### Atomic Positions ')
     st.dataframe(df, height=350)
-    st.write('Center of Mass of the total system', COM_calculator(coords_tot_np_arr))
+    st.write('Center of Mass of the total system', COM_calculator(coords_Tot_np_arr))
 
 # Select some rows using st.multiselect. This will break down when you have >1000 rows.
 st.write('#### Choose the atom labels/indices that should assigend to subsystem A')
@@ -248,7 +251,7 @@ selected_indices = st.multiselect('Select rows:', df.index)
 selected_rows_A = df.loc[selected_indices]
 natoms_A = selected_rows_A.shape[0]
 selected_rows_B = df.loc[~df.index.isin(selected_indices)]
-selected_rows_B.index -= natoms_A
+# selected_rows_B.index -= natoms_A
 natoms_B = selected_rows_B.shape[0]
 
 coords_A_np_arr = selected_rows_A[['x','y','z']].to_numpy()
@@ -264,6 +267,14 @@ with st.expander('More customizations', expanded=False):
         translate_y = col_translate2.number_input('Translate along y', value=0.0, min_value=-10.0, max_value=10.0, step=0.1)
         translate_z = col_translate3.number_input('Translate along z', value=0.0, min_value=-10.0, max_value=10.0, step=0.1)
         translate_com = st.number_input('Translate along the line joining the COMs of the subsystems', value=0.0, min_value=-10.0, max_value=10.0, step=0.1)
+        if subsystem_to_translate=='A':
+            coords_A_np_arr[:,0] += translate_x
+            coords_A_np_arr[:,1] += translate_y
+            coords_A_np_arr[:,2] += translate_z
+        if subsystem_to_translate=='B':
+            coords_B_np_arr[:,0] += translate_x
+            coords_B_np_arr[:,1] += translate_y
+            coords_B_np_arr[:,2] += translate_z
 
     with tab2:
         subsystem_to_rotate = st.selectbox('Choose a subsystem to rotate', ['A','B'])
@@ -272,6 +283,49 @@ with st.expander('More customizations', expanded=False):
         translate_y = col_translate2.number_input('Rotate about y', value=0.0, min_value=0.0, max_value=360.0, step=1.0)
         translate_z = col_translate3.number_input('Rotate about z', value=0.0, min_value=0.0, max_value=360.0, step=1.0)
         translate_com = st.number_input('Rotate about the line joining the COMs of the subsystems', value=0.0, min_value=0.0, max_value=360.0, step=1.0)
+
+#Create an XYZ file of the modified/customized structure
+selected_rows_A.iloc[:,1:4] = coords_A_np_arr
+selected_rows_B.iloc[:,1:4] = coords_B_np_arr
+coords_Tot_np_arr_new = np.concatenate([coords_A_np_arr, coords_B_np_arr])
+modified_xyz = str(natoms_tot)+'\n Created for RIPER Embedding\n'
+modified_xyz = modified_xyz + selected_rows_A.to_string(header=False, index=False, float_format='{:.6f}'.format)
+modified_xyz = modified_xyz + '\n' + selected_rows_B.to_string(header=False, index=False, float_format='{:.6f}'.format)
+xyz_view = py3Dmol.view(width=500, height=300)
+xyz_view.addModel(modified_xyz, 'xyz')
+xyz_view.setStyle({'sphere':{'colorscheme':'Jmol','scale':0.3},
+                       'stick':{'colorscheme':'Jmol', 'radius':0.2}})
+
+if showLabels:
+    iat = 0
+    for atom in mol:
+        xyz_view.addLabel(str(atom.idx), {'position': {'x':coords_Tot_np_arr_new[iat,0], 'y':coords_Tot_np_arr_new[iat,1], 'z':coords_Tot_np_arr_new[iat,2]}, 
+            'backgroundColor': 'white', 'backgroundOpacity': 0.5,'fontSize':18,'fontColor':'black',
+                'fontOpacity':1,'borderThickness':0.0,'inFront':'true','showBackground':'false'})
+        iat = iat + 1
+# Draw Axis
+originAxis_Offset = np.array([-2.0, -2.0, 1.0])
+originAxis = originAxis_Offset + np.array([np.min(coords_Tot_np_arr_new[:,0]), np.min(coords_Tot_np_arr_new[:,1]), np.min(coords_Tot_np_arr_new[:,2])])
+xyz_view.addArrow({"start": {"x":originAxis[0], "y":originAxis[1], "z":originAxis[2]}, "end": {"x":originAxis[0]+0.8, "y":originAxis[1], "z":originAxis[2]}, "radiusRadio": 0.2, "color":"red"})
+xyz_view.addArrow({"start": {"x":originAxis[0], "y":originAxis[1], "z":originAxis[2]}, "end": {"x":originAxis[0], "y":originAxis[1]+0.8, "z":originAxis[2]}, "radiusRadio": 0.2, "color":"green"})
+xyz_view.addArrow({"start": {"x":originAxis[0], "y":originAxis[1], "z":originAxis[2]}, "end": {"x":originAxis[0], "y":originAxis[1], "z":originAxis[2]+0.8}, "radiusRadio": 0.2, "color":"blue"})
+
+xyz_view.zoomTo()
+xyz_view.show()
+xyz_view.center()
+xyz_view.render()
+
+t1 = xyz_view.js()
+f1 = open('viz1.html', 'w')
+f1.write(t1.startjs)
+f1.write(t1.endjs)
+f1.close()
+HtmlFile1 = open("viz1.html", 'r', encoding='utf-8')
+source_code1 = HtmlFile1.read() 
+components.html(source_code1, height = 300, width=900)
+HtmlFile1.close()
+st.write('###### Axis labels')
+st.write('*x* : red, \n *y* :green, \n *z* :blue')
 
 com_A = COM_calculator(coords_A_np_arr)
 com_B = COM_calculator(coords_B_np_arr)
@@ -301,8 +355,6 @@ with col2:
 
 
 st.write('#### Reformatted XYZ file with the atoms belonging to the subystem A in the beginning')
-modified_xyz = selected_rows_A.to_string(header=False, index=False, float_format='{:.6f}'.format)
-modified_xyz = modified_xyz + '\n' + selected_rows_B.to_string(header=False, index=False, float_format='{:.6f}'.format)
 # st.text(modified_xyz)
 st.text_area(label='XYZ file contents with subsystem A in the beginning', value = modified_xyz, placeholder = 'Put your text here', height=250, key = 'output_text_area')
 
