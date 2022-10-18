@@ -7,7 +7,7 @@ import time
 from io import StringIO
 import pandas as pd
 import numpy as np
-from stmol import showmol
+# from stmol import showmol
 
 try:
     # from openbabel import OBMol, OBConversion
