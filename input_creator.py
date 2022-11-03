@@ -526,7 +526,7 @@ if not natoms_A==0:
     if method_code==1 or method_code==3:
         st.write('##### Kinetic Energy Density Functional')
         st.write('Use this link to find out more LibXC codes and their references: [https://tddft.org/programs/libxc/functionals/](https://tddft.org/programs/libxc/functionals/)')
-        kedfunc_dict = {'electro/none':'none', 521:'LC94 (GGA)', 50: 'Thomas-Fermi KE (LDA)', 55: 'REVAPBE - revised APBE (GGA)', 53: 'REVAPBEINT - interpolated version of revAPBE (GGA)'}
+        kedfunc_dict = {'electro':'none', 521:'LC94 (GGA)', 50: 'Thomas-Fermi KE (LDA)', 55: 'REVAPBE - revised APBE (GGA)', 53: 'REVAPBEINT - interpolated version of revAPBE (GGA)'}
         
         kedfunc = st.selectbox('Select the LibXC code for kinetic energy density functional for the embedding calculations',
                 kedfunc_dict, key='kedfunc')
@@ -597,11 +597,10 @@ if not natoms_A==0:
     riper_path = st.text_input('Path of the riper or riper_smp/riper_omp executable', value='/home/user/turbomole/bin/em64t-unknown-linux-gnu_smp/')
 
     ### Start creating the text for the input file ####
-    input_file_str = '''
-    # INPUT FILE FOR RUNNING EMBEDDING CALCULATIONS VIA riperembed.py SCRIPT AND RIPER MODULE OF TURBOMOLE
-    # Cite the work as: 
-    '''
     st.write('#### INPUT FILE')
+    input_file_str = '# INPUT FILE FOR RUNNING EMBEDDING CALCULATIONS VIA riperembed.py SCRIPT AND RIPER MODULE OF TURBOMOLE\n'
+    input_file_str = input_file_str + '# Cite the implementation as:\n'
+    input_file_str = input_file_str + '$FDE'
     input_file_str = input_file_str + '\nnsystm = ' + str(nsystm)
     input_file_str = input_file_str + '\nptnIndx = ' + str(ptnIndx[0]) + ' ' + str(ptnIndx[1])
     input_file_str = input_file_str + '\nKEfunc = ' + str(kedfunc)
@@ -619,7 +618,7 @@ if not natoms_A==0:
     input_file_str = input_file_str + '\ndenconv = ' + str(density_conv)
     input_file_str = input_file_str + '\nricore = ' + str(ricore_memory)
     if isFaT:
-        input_file_str = input_file_str + '\nnmax_FAT = ' + str(max_fat_cycles)
+        input_file_str = input_file_str + '\nnmax_FaT = ' + str(max_fat_cycles)
     input_file_str = input_file_str + '\nscfiterlimit = ' + str(max_scf_cycles)
     input_file_str = input_file_str + '\nmxitdiis = ' + str(max_it_diis)
     if method_code==5:
