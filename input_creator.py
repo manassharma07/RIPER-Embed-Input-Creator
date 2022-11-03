@@ -58,7 +58,7 @@ def COM_calculator(coords):
     return coords.mean(axis=0)
 
 # Set page config
-st.set_page_config(page_title="DFT based Embedding Input File Creator (for TURBOMOLE's riper module)", layout='wide', page_icon="🧊",
+st.set_page_config(page_title="DFT based Embedding Input File Creator (for TURBOMOLE's `riper` module)", layout='wide', page_icon="🧊",
 menu_items={
          'About': "### This online tool allows you to create an input file for DFT based embedding calculations using TURBOMOLE's riper module"
      })
