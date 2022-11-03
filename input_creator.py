@@ -47,7 +47,7 @@ st.sidebar.write('## Brought to you by [TURBOMOLE](https://www.turbomole.org)')
 st.sidebar.write('## Cite us:')
 st.sidebar.write('[Sharma, M. & Sierka, M. (2022). J. Chem. Theo. Comput. xx, xxxx-xxxx.](https://doi.org/10.1021/acs.jctc.2c00380)')
 with st.sidebar.expander('Instructions'):
-    st.write('1️⃣ Paste the contents of an XYZ file that contains the atomic coordinates of the toal system.')
+    st.write('1️⃣ Upload/Paste the contents of an XYZ file that contains the atomic coordinates of the total system.')
     st.write('2️⃣ Select the atoms belonging to subsystem A. These will automatically be placed in the beginning in the new coords file.')
     st.write('3️⃣ Download the totalCoords file.')
     st.write('4️⃣ Create and Download the input file using the GUI.')
@@ -375,7 +375,7 @@ if not natoms_A==0:
 
 
 
-    st.write('#### Reformatted XYZ file with the atoms belonging to the subystem A in the beginning')
+    st.write('#### Reformatted Coordinate files with the atoms belonging to the subystem A in the beginning')
     # neater modified xyz
     mol_final = pybel.readstring('xyz', modified_xyz)
     modified_xyz = mol_final.write('xyz')
@@ -390,7 +390,7 @@ if not natoms_A==0:
         mime='text/csv',
     )
     col2_coords.download_button(
-        label="Download the coordinate file for embedding calculations with RIPER",
+        label="Download the totalCoords file for embedding calculations with RIPER",
         data=modified_coords_file,
         file_name='totalCoords',
         mime='text/csv',
