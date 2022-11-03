@@ -624,6 +624,7 @@ if not natoms_A==0:
     input_file_str = input_file_str + '\nmxitdiis = ' + str(max_it_diis)
     if method_code==5:
         input_file_str = input_file_str + '\nperiodicity = ' + str(periodicity)
+    input_file_str = input_file_str + '\npath = ' + str(riper_path)
 
 
 
