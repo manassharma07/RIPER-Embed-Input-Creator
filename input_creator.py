@@ -46,6 +46,13 @@ st.sidebar.write('* [Open Babel](http://openbabel.org/) for Format Conversion')
 st.sidebar.write('## Brought to you by [TURBOMOLE](https://www.turbomole.org)')
 st.sidebar.write('## Cite us:')
 st.sidebar.write('[Sharma, M. & Sierka, M. (2022). J. Chem. Theo. Comput. xx, xxxx-xxxx.](https://doi.org/10.1021/acs.jctc.2c00380)')
+with st.sidebar.expander('Instructions'):
+    st.write('1️⃣ Paste the contents of an XYZ file that contains the atomic coordinates of the toal system.')
+    st.write('2️⃣ Select the atoms belonging to subsystem A. These will automatically be placed in the beginning in the new coords file.')
+    st.write('3️⃣ Download the totalCoords file.')
+    st.write('4️⃣ Create and Download the input file using the GUI.')
+    st.write('5️⃣ Put the two files (totalCoords adn input) in the same directory.')
+    st.write('6️⃣ Run the riperembed.py script as: nohup python3 riperembed.py > output_embedding &')
 
 # Main app
 st.write("## DFT based Embedding Input File Creator (for TURBOMOLE's riper module)")
@@ -376,16 +383,27 @@ if not natoms_A==0:
     col1_coords, col2_coords = st.columns(2)
     col1_coords.text_area(label='XYZ file contents with subsystem A in the beginning', value = modified_xyz, placeholder = 'Put your text here', height=250, key = 'output_xyz_text_area')
     col2_coords.text_area(label='Coords file contents with subsystem A in the beginning', value = modified_coords_file, placeholder = 'Put your text here', height=250, key = 'output_coords_text_area')
-
+    col1_coords.download_button(
+        label="Download the XYZ file for your use (This file is not needed for embedding calculations with RIPER)",
+        data=modified_xyz,
+        file_name='total.xyz',
+        mime='text/csv',
+    )
+    col2_coords.download_button(
+        label="Download the coordinate file for embedding calculations with RIPER",
+        data=modified_coords_file,
+        file_name='totalCoords',
+        mime='text/csv',
+    )
 
     ### BEGIN INPUT FILE CREATION ####
     st.write('#### Set the parameters for the input file')
     ### PARAMETERS ###
     nsystm = 2 # no. of subsystems (For now only two are supported so no option to change this)
-    ptnIndx = [natoms_A, natoms_tot] # Indices of the last atoms of the two subssytems separated by 
+    ptnIndx = [natoms_A, natoms_tot] # Indices of the last atoms of the two subssytems separated by space
     KEfunc = 521 # LibXC code of the KEDF (Default: LC94)
     xName = 1 # LibXC code of the exchange functional (Default: Slater Exchange)
-    cName = 7 # LibXC code of the correlation functional (Default: SVWN)
+    cName = 7 # LibXC code of the correlation functional (Default: VWN5)
     xc_change = False # If a different XC functional should be used for active and encironment subsystems
     xName_cluster = 101 # LibXC code of the exchange functional (Default: PBE)
     cName_cluster = 130 # LibXC code of the exchange functional (Default: PBE)
@@ -413,16 +431,9 @@ if not natoms_A==0:
     ricore = 500 # Memory to keep RI integrals in core
     mxitdiis = 5 # No. of DIIS vectors to be used
     scfiterlimit = 50 # Max SCF iterations for each Embedding run
+    path = '/home/user/turbomole/bin/sysname/'
 
-    input_file_str = '''
-    # INPUT FILE FOR RUNNING EMBEDDING CALCULATIONS VIA riperembed.py SCRIPT AND RIPER MODULE OF TURBOMOLE
-    # Cite the work as: 
-    '''
-    input_file_str = input_file_str + '\n' + str(nsystm)
-    input_file_str = input_file_str + '\n' + str(nsystm)
-    input_file_str = input_file_str + '\n' + str(nsystm)
-    input_file_str = input_file_str + '\n' + str(nsystm)
-    input_file_str = input_file_str + '\n' + str(nsystm)
+    
 
 
 
@@ -456,7 +467,7 @@ if not natoms_A==0:
     energy_conv = st.number_input('Specify energy convergence criterion (10^-N) for both embedding and Freeze-and-Thaw run ', min_value=3, max_value=10, value=7, step=1)
     density_conv = st.number_input('Specify density convergence criterion (10^-N) for both embedding and Freeze-and-Thaw run ', min_value=3, max_value=10, value=7, step=1)
     max_scf_cycles = st.number_input('Specify the maximum no. of SCF cycles to be performed for each embedding run', min_value=3, max_value=500, value=40, step=1)
-    max_it_diis = st.number_input('DIIS', min_value=1, max_value=100, value=5, step=1)
+    max_it_diis = st.number_input('No. of error vectors for DIIS', min_value=1, max_value=100, value=5, step=1)
 
     ### Freeze-and-Thaw (FaT) parameters ####
     st.write('##### Freeze-and-Thaw (FaT) parameters')
@@ -490,9 +501,10 @@ if not natoms_A==0:
     ➡️ DFT-in-DFT (periodic-in-periodic) embedding using a level-shift projection operator-based embedding potential.\n
     ➡️ Compatible with Freeze-and-Thaw (FaT).\n
     ➡️ Only compatible with a supermolecular basis.\n
-    ➡️ Gives exact results.
-    ➡️ Compatible with multiple k-points.
-    ➡️ You also need to provide periodicity details like lattice parameters and kpoint grids with this method.\n'''
+    ➡️ Gives exact results.\n
+    ➡️ Compatible with multiple k-points.\n
+    ➡️ You also need to provide periodicity details like lattice parameters and kpoint grids with this method.\n
+    ➡️ Both subsystems are assumed to have the same periodicity, lattice vectors/cell parameters and kmesh.\n'''
     embedding_method_descriptions = {1: method1_description, 3: method3_description, 4: method4_description, 5: method5_description}
     st.write('Description of the chosen embedding method')
     st.write(embedding_method_descriptions[method_code])
@@ -500,11 +512,131 @@ if not natoms_A==0:
     ### Exchange-Correlation Functionals ####
     st.write('##### Exchange-Correlation Functionals')
     is_same_xc = st.checkbox('Use same exchange-correlation functional for both the subsystems', value=True)
+    st.write('Use this link to find out more LibXC codes and their references: [https://tddft.org/programs/libxc/functionals/](https://tddft.org/programs/libxc/functionals/)')
 
     xfunc_dict = {1:'Slater exchange', 101: 'PBE Exchange'}
-    cfunc_dict = {7:'Slater exchange', 130: 'PBE Correlation'}
+    cfunc_dict = {7:'VWN5 Correlation', 12: 'Perdew & Wang Correlation', 130: 'PBE Correlation'}
     if is_same_xc:
         xfunc_tot = st.selectbox('Select the LibXC code for exchange functional for the total system',
             xfunc_dict, key='xfunc_tot')
         cfunc_tot = st.selectbox('Select the LibXC code for correlation functional for the total system',
             cfunc_dict, key='cfunc_tot')
+
+    ### Kinetic Energy Functionals ####
+    if method_code==1 or method_code==3:
+        st.write('##### Kinetic Energy Density Functional')
+        st.write('Use this link to find out more LibXC codes and their references: [https://tddft.org/programs/libxc/functionals/](https://tddft.org/programs/libxc/functionals/)')
+        kedfunc_dict = {'electro/none':'none', 521:'LC94 (GGA)', 50: 'Thomas-Fermi KE (LDA)', 55: 'REVAPBE - revised APBE (GGA)', 53: 'REVAPBEINT - interpolated version of revAPBE (GGA)'}
+        
+        kedfunc = st.selectbox('Select the LibXC code for kinetic energy density functional for the embedding calculations',
+                kedfunc_dict, key='kedfunc')
+
+    ### Charges for subsystems ####
+    st.write('##### Charges for subsystems')
+    st.write('Since only closed-shell occupations are supported for embedding calculations, one may need to provide charges to subsystems to ensure this, especially when covalent bonds are broken.')
+    charge_A = st.number_input('Charge for subsystem A', value=0, step=1)
+    charge_B = st.number_input('Charge for subsystem B', value=0, step=1)
+
+    ### Periodic details ####
+    if method_code==5:
+        st.write('##### Details for the periodic system')
+        periodicity = st.number_input('Periodicity', value=1, min_value=1, max_value=3, step=1)
+        cell_info_mode = st.radio('Will you provide cell parameters (also known as lattice constants/lattice parameters) or lattice vectors?', ('Cell Parameters', 'Lattice Vectors'))
+        if cell_info_mode=='Cell Parameters':
+            col1_cell, col2_cell, col3_cell = st.columns(3)
+            if periodicity==1:
+                cell_a = col1_cell.number_input('Cell parameter a (in Angstroms)', value=4.0, step=0.1)
+            if periodicity==2:
+                cell_a = col1_cell.number_input('Cell parameter a (in Angstroms)', value=4.0, step=0.1)
+                cell_b = col2_cell.number_input('Cell parameter b (in Angstroms)', value=4.0, step=0.1)
+                cell_gamma = col1_cell.number_input('Cell parameter gamma (in degrees)', value=90.0, step=0.5)
+            if periodicity==3:
+                cell_a = col1_cell.number_input('Cell parameter a (in Angstroms)', value=4.0, step=0.1)
+                cell_b = col2_cell.number_input('Cell parameter b (in Angstroms)', value=4.0, step=0.1)
+                cell_c = col3_cell.number_input('Cell parameter c (in Angstroms)', value=4.0, step=0.1)
+                cell_alpha = col1_cell.number_input('Cell parameter alpha (in degrees)', value=90.0, step=0.5)
+                cell_beta = col2_cell.number_input('Cell parameter beta (in degrees)', value=90.0, step=0.5)
+                cell_gamma = col3_cell.number_input('Cell parameter gamma (in degrees)', value=90.0, step=0.5)
+        elif cell_info_mode=='Lattice Vectors':
+            col1_cell, col2_cell, col3_cell = st.columns(3)
+            if periodicity==1:
+                x_latt_vec_a = col1_cell.number_input('X-component of Lattice vector a (in Angstroms)', value=4.0, step=0.1)
+            if periodicity==2:
+                x_latt_vec_a = col1_cell.number_input('X-component of Lattice vector a (in Angstroms)', value=4.0, step=0.1)
+                y_latt_vec_a = col2_cell.number_input('Y-component of Lattice vector a (in Angstroms)', value=0.0, step=0.1)
+                x_latt_vec_b = col1_cell.number_input('X-component of Lattice vector b (in Angstroms)', value=0.0, step=0.1)
+                y_latt_vec_b = col2_cell.number_input('Y-component of Lattice vector b (in Angstroms)', value=4.0, step=0.1)
+            if periodicity==3:
+                x_latt_vec_a = col1_cell.number_input('X-component of Lattice vector a (in Angstroms)', value=4.0, step=0.1)
+                y_latt_vec_a = col2_cell.number_input('Y-component of Lattice vector a (in Angstroms)', value=0.0, step=0.1)
+                z_latt_vec_a = col3_cell.number_input('Z-component of Lattice vector a (in Angstroms)', value=0.0, step=0.1)
+                x_latt_vec_b = col1_cell.number_input('X-component of Lattice vector b (in Angstroms)', value=0.0, step=0.1)
+                y_latt_vec_b = col2_cell.number_input('Y-component of Lattice vector b (in Angstroms)', value=4.0, step=0.1)
+                z_latt_vec_b = col3_cell.number_input('Z-component of Lattice vector b (in Angstroms)', value=0.0, step=0.1)
+                x_latt_vec_c = col1_cell.number_input('X-component of Lattice vector c (in Angstroms)', value=0.0, step=0.1)
+                y_latt_vec_c = col2_cell.number_input('Y-component of Lattice vector c (in Angstroms)', value=0.0, step=0.1)
+                z_latt_vec_c = col3_cell.number_input('Z-component of Lattice vector c (in Angstroms)', value=4.0, step=0.1)
+
+        st.write('###### K-mesh/gridsize info')
+        col1_kpts, col2_kpts, col3_kpts = st.columns(3)
+        if periodicity==1:
+            nk_x = col1_kpts.number_input('No. of k-points along x', value=3, step=1)
+        if periodicity==2:
+            nk_x = col1_kpts.number_input('No. of k-points along x', value=3, step=1)
+            nk_y = col2_kpts.number_input('No. of k-points along y', value=3, step=1)
+        if periodicity==3:
+            nk_x = col1_kpts.number_input('No. of k-points along x', value=3, step=1)
+            nk_y = col2_kpts.number_input('No. of k-points along y', value=3, step=1)
+            nk_z = col3_kpts.number_input('No. of k-points along z', value=3, step=1)
+
+    ### Calculate Embedding Error ####
+    st.write('##### Calculate embedding error?')
+    isEmbError = st.checkbox('Should a total regular KS-DFT calculation be performed at the end to estimate the embedding error?', value=True)
+
+    ### RIPER path ####
+    riper_path = st.text_input('Path of the riper or riper_smp/riper_omp executable', value='/home/user/turbomole/bin/em64t-unknown-linux-gnu_smp/')
+
+    ### Start creating the text for the input file ####
+    input_file_str = '''
+    # INPUT FILE FOR RUNNING EMBEDDING CALCULATIONS VIA riperembed.py SCRIPT AND RIPER MODULE OF TURBOMOLE
+    # Cite the work as: 
+    '''
+    st.write('#### INPUT FILE')
+    input_file_str = input_file_str + '\nnsystm = ' + str(nsystm)
+    input_file_str = input_file_str + '\nptnIndx = ' + str(ptnIndx[0]) + ' ' + str(ptnIndx[1])
+    input_file_str = input_file_str + '\nKEfunc = ' + str(kedfunc)
+    input_file_str = input_file_str + '\nbasis = ' + str(basis_set_tot)
+    input_file_str = input_file_str + '\nauxbasis = ' + str(auxbasis_set)
+    input_file_str = input_file_str + '\nKEfunc = ' + str(kedfunc)
+    input_file_str = input_file_str + '\nxName = ' + str(xfunc_tot)
+    input_file_str = input_file_str + '\ncName = ' + str(cfunc_tot)
+    input_file_str = input_file_str + '\nfrozen = ' + str(not isFaT)
+    input_file_str = input_file_str + '\nscratch = ' + str(True)
+    input_file_str = input_file_str + '\nsuper = ' + str(isSuperBasis)
+    input_file_str = input_file_str + '\nemb_error = ' + str(isEmbError)
+    input_file_str = input_file_str + '\nmethod = ' + str(method_code)
+    input_file_str = input_file_str + '\nscfconv = ' + str(energy_conv)
+    input_file_str = input_file_str + '\ndenconv = ' + str(density_conv)
+    input_file_str = input_file_str + '\nricore = ' + str(ricore_memory)
+    if isFaT:
+        input_file_str = input_file_str + '\nnmax_FAT = ' + str(max_fat_cycles)
+    input_file_str = input_file_str + '\nscfiterlimit = ' + str(max_scf_cycles)
+    input_file_str = input_file_str + '\nmxitdiis = ' + str(max_it_diis)
+    if method_code==5:
+        input_file_str = input_file_str + '\nperiodicity = ' + str(periodicity)
+
+
+
+    st.text_area('Input file contents for embedding via RIPER', value=input_file_str, height=400)
+    st.download_button(
+        label="Download the input file",
+        data=input_file_str,
+        file_name='input',
+        mime='text/csv',
+    )
+
+    st.write('#### Next Instructions')
+    st.write('1️⃣ Download the totalCoords file from the previous section.')
+    st.write('2️⃣ Download the input file that we just created.')
+    st.write('3️⃣ Put the two files in the same directory.')
+    st.write('4️⃣ Run the riperembed.py script as: nohup python3 riperembed.py > output_embedding &')
