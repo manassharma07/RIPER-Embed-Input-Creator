@@ -27,6 +27,33 @@ if os.path.exists('viz.html'):
 if os.path.exists('viz1.html'):
     os.remove('viz1.html')
 
+further_information = '''When you run the `riperembed.py` script, it reads in the input parameters from the file named 
+'input' and the coordinates of the total system, from a file named `totalCoords`.\n
+Next, it automatically creates the required subdirectories for the subsystems and runs `define` and `riper` automatically based on the given input file. \n
+Let's have a look at the workflows of some specific casess.
+##### Freeze-and-Thaw Workflow
+If a Freeze-and-Thaw (FaT) calculation with `method=1,3,5 ` is requested then, it will create subdirectories `1`, `2`, `3`, ... corresponding 
+to the `ith` FaT cycle.\n
+1️⃣ For the first FaT cycle, the script will automatically run a regular KS-DFT calculation using `riper` on the isolated subsystem B (environment) 
+within the directory `1` and store the output in a file called `output2`.\n
+Note: The `control` and other TURBOMOLE related files are created by running `define` automatically. Then the script amends the `control` 
+to add the embedding related keywords based on the input file.\n
+Furthermore, auxiliary density coefficients of the subsystem B (`auxdcaoB`) and density matrix (`denssaoB`, `dmatspB`) are also saved on the disk. 
+Some energies of the subsystem B are also saved in a file called `energyB`. These are in the following order XC energy, nuc-nuc energy and KEDF energies.\n
+2️⃣ Then, the script will create a directory called `Cluster` (for subsystem A or active subsytem) and copy the necessary quantities, `denssaoB`, `dmatspB` 
+and `auxdcaoB` to this directory and also `cd` to it. \n
+Once again, `define` is run automatically and the necessary files are generated. Then the `control` file is modified with embedding related keywords for 
+the active subsytem. \n
+Subsequently, `riper` is launched and an embedding calculation is performed on the subsystem A in the presence of the isolated environment and the 
+result is stored in `output1`.\n
+3️⃣ Next, the script returns back to the `1` directory and creates another subdirectory called `Environment` for the subsystem B, and similar to before the 
+required quantitities for embedding are copied from the `Cluster` directory and the embedding calculation is performed via `riper` on the subsystem B in 
+the presence of subsystem B within the `Environment` directory and the result is stored in `output1`.\n
+4️⃣ For the next FaT cycles, the steps 2️⃣-3️⃣ are repeated and the results are stored in directories `2`, `3`,... unless energies and densities are converged.
+5️⃣ Finally, a regular KS-DFT calculation may be performed on the total system if requested in the input file, to estimate the embedding error.
+
+'''
+
 def COM_calculator(coords):
     return coords.mean(axis=0)
 
@@ -52,7 +79,7 @@ with st.sidebar.expander('Instructions'):
     st.write('3️⃣ Download the totalCoords file.')
     st.write('4️⃣ Create and Download the input file using the GUI.')
     st.write('5️⃣ Put the two files (totalCoords adn input) in the same directory.')
-    st.write('6️⃣ Run the riperembed.py script as: nohup python3 riperembed.py > output_embedding &')
+    st.write('6️⃣ Run the riperembed.py script as: `nohup riperembed.py > output_embedding` &')
 
 # Main app
 st.write("## DFT based Embedding Input File Creator (for TURBOMOLE's riper module)")
@@ -492,7 +519,7 @@ if not natoms_A==0:
     ➡️ Gives exact results, provided a sueprmolecular basis and FaT procedure is used.\n'''
     method4_description = '''
     ➡️ When this method is provided in the control file, then the riper program will read an embedding potential
-    from a file 'embdpot' and use it as a fixed additional potential during the SCF iterations. Using the 'riperembed.py' script
+    from a file 'embdpot' and use it as a fixed additional potential during the SCF iterations. Using the `riperembed.py` script
     or this input file creator is pointless with this method.\n
     ➡️ The expected usage for method 4, is to run an embedding calculation using method=1,2,3,5 and then take the embedding potential saved on disk in a file called 
     'embdpot' and paste it in a directoy where you would like to use this embedding potential as a frozen term for the active subsystem. For example to perform 
@@ -635,8 +662,11 @@ if not natoms_A==0:
         mime='text/csv',
     )
 
-    st.write('#### Next Instructions')
-    st.write('1️⃣ Download the totalCoords file from the previous section.')
-    st.write('2️⃣ Download the input file that we just created.')
+    st.write('#### What next?')
+    st.write('1️⃣ Download the `totalCoords` file from the previous section.')
+    st.write('2️⃣ Download the `input` file that we just created.')
     st.write('3️⃣ Put the two files in the same directory.')
-    st.write('4️⃣ Run the riperembed.py script as: nohup python3 riperembed.py > output_embedding &')
+    st.write('4️⃣ Run the `riperembed.py` script as: `nohup riperembed.py > output_embedding &`')
+
+    st.write('### Further information to understand the outputs')
+    st.write(further_information)
