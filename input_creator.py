@@ -380,12 +380,13 @@ if not natoms_A==0:
     dist_bw_COM_subsystems = np.linalg.norm(com_A - com_B)
     # The following is a 2d array that contains the euclidean distances between the atoms of the two subsystems
     dist_bw_atoms_subsystems = np.sqrt((coords_A_np_arr[:, 0, np.newaxis] - coords_B_np_arr[:, 0])**2 + (coords_A_np_arr[:, 1, np.newaxis] - coords_B_np_arr[:, 1])**2 + (coords_A_np_arr[:, 2, np.newaxis] - coords_B_np_arr[:, 2])**2)
+    st.write(dist_bw_atoms_subsystems)
     mindist = np.min(dist_bw_atoms_subsystems)
     # minid = np.argmin(dist_bw_atoms_subsystems)
     # minid = np.where(dist_bw_atoms_subsystems == np.min(dist_bw_atoms_subsystems))
     minid = divmod(dist_bw_atoms_subsystems.argmin(), dist_bw_atoms_subsystems.shape[1])
     st.info('Distance b/w the COMs of the subsystems is ' + str(np.round(dist_bw_COM_subsystems, 6))+'  Angstroms', icon='✨')
-    st.info('Minimum distance b/w the atoms of the subsystems is ' + str(np.round(mindist, 5))+'  Angstroms between atoms '+ str(selected_rows_A.iloc[minid[0],0])+'('+str(minid[0]+1)+')'+' and '+ str(selected_rows_B.iloc[minid[1],0])+'('+str(minid[1]+1)+')', icon='✨')
+    st.info('Minimum distance b/w the atoms of the subsystems is ' + str(np.round(mindist, 5))+'  Angstroms between atoms '+ str(selected_rows_A.iloc[minid[0],0])+'('+str(minid[0]+1)+')'+' and '+ str(selected_rows_B.iloc[minid[1],0])+'('+str(minid[1]+1+natoms_A)+')', icon='✨')
 
 
     col1, col2 = st.columns(2)
