@@ -298,6 +298,11 @@ natoms_B = selected_rows_B.shape[0]
 coords_A_np_arr = selected_rows_A[['x','y','z']].to_numpy()
 coords_B_np_arr = selected_rows_B[['x','y','z']].to_numpy()
 
+com_A_temp = COM_calculator(coords_A_np_arr)
+com_B_temp = COM_calculator(coords_B_np_arr)
+# Unit vector connecting the COMs of the two subsystems
+com_unit_vector_AB = (com_B_temp-com_A_temp)/np.linalg.norm(com_B_temp-com_A_temp)
+
 if not natoms_A==0:
     with st.expander('More customizations', expanded=False):
         tab1, tab2 = st.tabs(['Translate', 'Rotate'])
@@ -308,15 +313,17 @@ if not natoms_A==0:
             translate_x = col_translate1.number_input('Translate along x', value=0.0, min_value=-10.0, max_value=10.0, step=0.1)
             translate_y = col_translate2.number_input('Translate along y', value=0.0, min_value=-10.0, max_value=10.0, step=0.1)
             translate_z = col_translate3.number_input('Translate along z', value=0.0, min_value=-10.0, max_value=10.0, step=0.1)
-            translate_com = st.number_input('Translate along the line joining the COMs of the subsystems', value=0.0, min_value=-10.0, max_value=10.0, step=0.1)
+            translate_com = st.number_input('Translate along the line joining the COMs of the subsystem A and B (A-->B)', value=0.0, min_value=-10.0, max_value=10.0, step=0.1)
             if subsystem_to_translate=='A':
                 coords_A_np_arr[:,0] += translate_x
                 coords_A_np_arr[:,1] += translate_y
                 coords_A_np_arr[:,2] += translate_z
+                coords_A_np_arr[:,:] += com_unit_vector_AB*translate_com 
             if subsystem_to_translate=='B':
                 coords_B_np_arr[:,0] += translate_x
                 coords_B_np_arr[:,1] += translate_y
                 coords_B_np_arr[:,2] += translate_z
+                coords_B_np_arr[:,:] += com_unit_vector_AB*translate_com 
 
         with tab2:
             subsystem_to_rotate = st.selectbox('Choose a subsystem to rotate', ['A','B'])
