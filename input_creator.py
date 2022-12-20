@@ -279,7 +279,7 @@ with col1:
     components.html(source_code, height = 300, width=900)
     HtmlFile.close()
     st.write('###### Axis labels')
-    st.write('*x* : red,    *y* :green,     *z* :blue')
+    st.write('*x* : red,    *y* : green,     *z* : blue')
 
 with col2:
     st.write('#### Atomic Positions ')
@@ -380,7 +380,7 @@ if not natoms_A==0:
     components.html(source_code1, height = 300, width=900)
     HtmlFile1.close()
     st.write('###### Axis labels')
-    st.write('*x* : red,    *y* :green,     *z* :blue')
+    st.write('*x* : red,    *y* : green,     *z* : blue')
 
     com_A = COM_calculator(coords_A_np_arr)
     com_B = COM_calculator(coords_B_np_arr)
