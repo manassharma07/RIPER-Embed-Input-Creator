@@ -72,7 +72,7 @@ st.sidebar.write('* [Py3Dmol](https://pypi.org/project/py3Dmol/) for Visualizati
 st.sidebar.write('* [Open Babel](http://openbabel.org/) for Format Conversion')
 st.sidebar.write('## Brought to you by [TURBOMOLE](https://www.turbomole.org)')
 st.sidebar.write('## Cite us:')
-st.sidebar.write('[Sharma, M. & Sierka, M. (2022). J. Chem. Theo. Comput. xx, xxxx-xxxx.](https://doi.org/10.1021/acs.jctc.2c00380)')
+st.sidebar.write('[Manas Sharma and Marek Sierka, Journal of Chemical Theory and Computation **2022** 18 (11), 6892-6904](https://doi.org/10.1021/acs.jctc.2c00380)')
 with st.sidebar.expander('Instructions'):
     st.write('1️⃣ Upload/Paste the contents of an XYZ file that contains the atomic coordinates of the total system.')
     st.write('2️⃣ Select the atoms belonging to subsystem A. These will automatically be placed in the beginning in the new coords file.')
@@ -634,7 +634,10 @@ if not natoms_A==0:
     ### Start creating the text for the input file ####
     st.write('#### INPUT FILE')
     input_file_str = '# INPUT FILE FOR RUNNING EMBEDDING CALCULATIONS VIA riperembed.py SCRIPT AND RIPER MODULE OF TURBOMOLE\n'
-    input_file_str = input_file_str + '# Cite the implementation as:\n'
+    input_file_str = input_file_str + '''# Cite the implementation as: 
+    Manas Sharma and Marek Sierka
+    Journal of Chemical Theory and Computation 2022 18 (11), 6892-6904
+    DOI: 10.1021/acs.jctc.2c00380\n'''
     input_file_str = input_file_str + '$FDE'
     input_file_str = input_file_str + '\nnsystm = ' + str(nsystm)
     input_file_str = input_file_str + '\nptnIndx = ' + str(ptnIndx[0]) + ' ' + str(ptnIndx[1])
