@@ -2,3 +2,4 @@ streamlit
 py3Dmol
 ipython
 pandas
+openbabel-wheel
