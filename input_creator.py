@@ -377,7 +377,7 @@ if not natoms_A==0:
     st.write("You can also translate or move subsystems using the 'More customizations' tab above, and the changes will reflect in the following visualization")
     HtmlFile1 = open("viz1.html", 'r', encoding='utf-8')
     source_code1 = HtmlFile1.read() 
-    components.html(source_code1, height = 300, width=900)
+    components.html(source_code1, height = 300, width=500)
     HtmlFile1.close()
     st.write('###### Axis labels')
     st.write('*x* : red,    *y* : green,     *z* : blue')
