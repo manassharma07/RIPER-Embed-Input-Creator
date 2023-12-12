@@ -276,7 +276,7 @@ with col1:
     st.write('#### Visualization [Original]')
     HtmlFile = open("viz.html", 'r', encoding='utf-8')
     source_code = HtmlFile.read() 
-    components.html(source_code, height = 300, width=900)
+    components.html(source_code, height = 300, width=500)
     HtmlFile.close()
     st.write('###### Axis labels')
     st.write('*x* : red,    *y* : green,     *z* : blue')
@@ -635,9 +635,9 @@ if not natoms_A==0:
     st.write('#### INPUT FILE')
     input_file_str = '# INPUT FILE FOR RUNNING EMBEDDING CALCULATIONS VIA riperembed.py SCRIPT AND RIPER MODULE OF TURBOMOLE\n'
     input_file_str = input_file_str + '''# Cite the implementation as: 
-    Manas Sharma and Marek Sierka
-    Journal of Chemical Theory and Computation 2022 18 (11), 6892-6904
-    DOI: 10.1021/acs.jctc.2c00380\n'''
+#    Manas Sharma and Marek Sierka
+#    Journal of Chemical Theory and Computation 2022 18 (11), 6892-6904
+#    DOI: 10.1021/acs.jctc.2c00380\n'''
     input_file_str = input_file_str + '$FDE'
     input_file_str = input_file_str + '\nnsystm = ' + str(nsystm)
     input_file_str = input_file_str + '\nptnIndx = ' + str(ptnIndx[0]) + ' ' + str(ptnIndx[1])
