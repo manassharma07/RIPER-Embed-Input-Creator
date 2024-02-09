@@ -476,7 +476,7 @@ if not natoms_A==0:
 
     ### BASIS SET ####
     st.write('##### Basis related parameters')
-    is_same_basis_set = st.checkbox('Use same basis set for the total system', value=True)
+    is_same_basis_set = True#st.checkbox('Use same basis set for the total system', value=True)
 
     basis_set_list = ('sto-3g', 'def2-SVP', 'def2-SVPD', 'def2-TZVP', 'def2-TZVPP', 'def2-TZVPD', 'def2-TZVPPD', 'def2-QZVP', '6-31G', '6-311G')
     auxbasis_set_list = ('def2-SVP','def2-TZVP','universal')
@@ -546,7 +546,7 @@ if not natoms_A==0:
 
     ### Exchange-Correlation Functionals ####
     st.write('##### Exchange-Correlation Functionals')
-    is_same_xc = st.checkbox('Use same exchange-correlation functional for both the subsystems', value=True)
+    is_same_xc = True#st.checkbox('Use same exchange-correlation functional for both the subsystems', value=True)
     st.write('Use this link to find out more LibXC codes and their references: [https://tddft.org/programs/libxc/functionals/](https://tddft.org/programs/libxc/functionals/)')
 
     xfunc_dict = {1:'Slater exchange', 101: 'PBE Exchange'}
@@ -629,7 +629,7 @@ if not natoms_A==0:
     isEmbError = st.checkbox('Should a total regular KS-DFT calculation be performed at the end to estimate the embedding error?', value=True)
 
     ### RIPER path ####
-    riper_path = st.text_input('Path of the riper or riper_smp/riper_omp executable', value='/home/user/turbomole/bin/em64t-unknown-linux-gnu_smp/')
+    #riper_path = st.text_input('Path of the riper or riper_smp/riper_omp executable', value='/home/user/turbomole/bin/em64t-unknown-linux-gnu_smp/')
 
     ### Start creating the text for the input file ####
     st.write('#### INPUT FILE')
@@ -638,7 +638,7 @@ if not natoms_A==0:
 #    Manas Sharma and Marek Sierka
 #    Journal of Chemical Theory and Computation 2022 18 (11), 6892-6904
 #    DOI: 10.1021/acs.jctc.2c00380\n'''
-    input_file_str = input_file_str + '$FDE'
+    input_file_str = input_file_str + '$EMBED'
     input_file_str = input_file_str + '\nnsystm = ' + str(nsystm)
     input_file_str = input_file_str + '\nptnIndx = ' + str(ptnIndx[0]) + ' ' + str(ptnIndx[1])
     input_file_str = input_file_str + '\nKEfunc = ' + str(kedfunc)
@@ -661,7 +661,7 @@ if not natoms_A==0:
     input_file_str = input_file_str + '\nmxitdiis = ' + str(max_it_diis)
     if method_code==5:
         input_file_str = input_file_str + '\nperiodicity = ' + str(periodicity)
-    input_file_str = input_file_str + '\npath = ' + str(riper_path)
+    # input_file_str = input_file_str + '\npath = ' + str(riper_path)
 
 
 
