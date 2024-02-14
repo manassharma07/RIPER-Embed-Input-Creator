@@ -28,7 +28,7 @@ if os.path.exists('viz1.html'):
     os.remove('viz1.html')
 
 further_information = '''When you run the `riperembed.py` script, it reads in the input parameters from the file named 
-'input' and the coordinates of the total system, from a file named `totalCoords`.\n
+'input' and the coordinates of the total system, from a file named `totalCoord`.\n
 Next, it automatically creates the required subdirectories for the subsystems and runs `define` and `riper` automatically based on the given input file. \n
 Let's have a look at the workflows of some specific casess.
 ##### Freeze-and-Thaw Workflow
@@ -76,9 +76,9 @@ st.sidebar.write('[Manas Sharma and Marek Sierka, Journal of Chemical Theory and
 with st.sidebar.expander('Instructions'):
     st.write('1️⃣ Upload/Paste the contents of an XYZ file that contains the atomic coordinates of the total system.')
     st.write('2️⃣ Select the atoms belonging to subsystem A. These will automatically be placed in the beginning in the new coords file.')
-    st.write('3️⃣ Download the totalCoords file.')
+    st.write('3️⃣ Download the totalCoord file.')
     st.write('4️⃣ Create and Download the input file using the GUI.')
-    st.write('5️⃣ Put the two files (totalCoords adn input) in the same directory.')
+    st.write('5️⃣ Put the two files (totalCoord and input) in the same directory.')
     st.write('6️⃣ Run the riperembed.py script as: `nohup riperembed.py > output_embedding` &')
 
 # Main app
@@ -425,9 +425,9 @@ if not natoms_A==0:
         mime='text/csv',
     )
     col2_coords.download_button(
-        label="Download the totalCoords file for embedding calculations with RIPER",
+        label="Download the totalCoord file for embedding calculations with RIPER",
         data=modified_coords_file,
-        file_name='totalCoords',
+        file_name='totalCoord',
         mime='text/csv',
     )
 
@@ -674,7 +674,7 @@ if not natoms_A==0:
     )
 
     st.write('#### What next?')
-    st.write('1️⃣ Download the `totalCoords` file from the previous section.')
+    st.write('1️⃣ Download the `totalCoord` file from the previous section.')
     st.write('2️⃣ Download the `input` file that we just created.')
     st.write('3️⃣ Put the two files in the same directory.')
     st.write('4️⃣ Run the `riperembed.py` script as: `nohup riperembed.py > output_embedding &`')
